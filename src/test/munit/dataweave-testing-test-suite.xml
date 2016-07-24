@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+	<munit:config name="munit" doc:name="MUnit configuration" />
+	<munit:test name="dataweave-testing-test-suite-dataweave-testingFlowTest"
+		description="Test">
+		<munit:set
+			payload="#[getResource('sample_data/employees.xml').asStream()]"
+			doc:name="Set Message" mimeType="application/xml" />
+		<dw:transform-message doc:name="Transform Message">
+			<dw:set-payload resource="classpath:dwl/employees.dwl" />
+		</dw:transform-message>
+		<munit:assert-on-equals expectedValue="#[2]"
+			actualValue="#[payload.employees.size()]" doc:name="Assert Equals"
+			message="Missing some employees" />
+		<munit:assert-on-equals expectedValue="#[36]"
+			actualValue="#[payload.employees[0].age]" doc:name="Assert Equals" />
+	</munit:test>
+	
+	<munit:test name="dataweave-testing-test-suite-dataweave-csv-testingFlowTest"
+		description="Test">
+		<munit:set
+			payload="#[getResource('sample_data/employees.xml').asStream()]"
+			doc:name="Set Message" mimeType="application/xml" />
+		<dw:transform-message doc:name="Transform Message">
+			<dw:set-payload resource="classpath:dwl/employees2.dwl" />
+		</dw:transform-message>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+(payload)]]></dw:set-payload>
+        </dw:transform-message>
+		<munit:assert-on-equals expectedValue="#[2]"
+			actualValue="#[payload.size()]" doc:name="Assert Equals"
+			message="Missing some employees" />
+		<munit:assert-on-equals expectedValue="#['36']"
+			actualValue="#[payload[0].age]" doc:name="Assert Equals" />
+	</munit:test>
+	
+</mule>

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+	<employee>
+		<fname>M1</fname>
+		<lname>M2</lname>
+		<dob>01-01-1980</dob>
+	</employee>
+	<employee>
+		<fname>A1</fname>
+		<lname>A2</lname>
+		<dob>12-23-1995</dob>
+	</employee>
+</root>
